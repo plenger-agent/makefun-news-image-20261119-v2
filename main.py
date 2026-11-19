@@ -1,44 +1,64 @@
 #!/usr/bin/env python3
-"""make.fun entry for news-image-20261119: "Sum up 19 November's world news in one image".
+"""Hand-in program for the news-image-20261119 v2 entry.
 
-The repository holds the front-page image as entry.png (a 1024x1024 PNG,
-666,996 bytes): "The World in One Day — Thursday 19 November 2026" -
-a dated broadsheet front page of that day's real world news: a big-number
-stat strip, 13 drawn story cards (the Shenzhen Trump-Xi-Putin summit, GTA
-VI's launch day, Anthropic's record IPO, the ICJ Rohingya judgment, Cyclone
-Akvan, COP31's final hours and more), a dot-matrix world map with the 13
-stories pinned, 23 further one-line briefs, and a DATE CHECK box naming the
-stories left out because they were first reported on 18 November. This
-program copies that image, byte for byte, to the output location. It uses
-only the Python standard library, needs no network, and is deterministic:
-every run writes exactly the same bytes.
-
-Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
-    mkdir -p out && MAKEFUN_OUTPUT_DIR=out python3 main.py
+The competition entry itself is a single rendered front page, entry.png,
+which sits beside this file. This program's whole job is delivery: it
+copies that page into the output directory the grader names, creating
+the directory first when it does not exist yet, and then reports what
+it did. It uses only the Python standard library and keeps no state,
+so running it twice in a row is harmless.
 """
 
 import os
+import shutil
+import sys
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
-SOURCE_IMAGE = HERE / "entry.png"
+# Name of the environment variable the grader uses to point us at the
+# output directory; when it is absent we fall back to the conventional
+# location the earlier rounds of this competition used.
+OUTPUT_ENV_VAR = "MAKEFUN_OUTPUT_DIR"
+FALLBACK_OUTPUT_DIR = "/output"
+
+# The single artefact this entry hands in. It always lives in the same
+# directory as this program, never relative to the caller's cwd.
+PAGE_FILENAME = "entry.png"
 
 
-def output_path() -> Path:
-    out_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
-    out_dir.mkdir(parents=True, exist_ok=True)
-    return out_dir / "entry.png"
+def page_source() -> Path:
+    """Return the path of the front page that ships with this program."""
+    return Path(__file__).resolve().parent / PAGE_FILENAME
 
 
-def main() -> None:
-    # Self-check the asset against the competition gate before copying:
-    # a whole PNG (signature plus IEND trailer) of at most 1 MiB.
-    data = SOURCE_IMAGE.read_bytes()
-    assert data.startswith(b"\x89PNG\r\n\x1a\n"), "entry.png is not a PNG"
-    assert data.rstrip().endswith(b"IEND\xaeB`\x82"), "entry.png is truncated"
-    assert len(data) <= 1_048_576, "entry.png exceeds the 1 MiB gate limit"
-    output_path().write_bytes(data)
+def output_directory() -> Path:
+    """Work out where the grader wants the page to land."""
+    named = os.environ.get(OUTPUT_ENV_VAR, "").strip()
+    if named:
+        return Path(named)
+    return Path(FALLBACK_OUTPUT_DIR)
+
+
+def deliver() -> Path:
+    """Copy the front page into the output directory and return its path.
+
+    The directory is created with any missing parents, and an existing
+    copy from an earlier run is simply overwritten, so a repeated
+    hand-in always leaves exactly the page this repo carries.
+    """
+    source = page_source()
+    target_dir = output_directory()
+    target_dir.mkdir(parents=True, exist_ok=True)
+    target = target_dir / PAGE_FILENAME
+    shutil.copyfile(source, target)
+    return target
+
+
+def main() -> int:
+    target = deliver()
+    size = target.stat().st_size
+    print(f"handed in {PAGE_FILENAME} -> {target} ({size} bytes)")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

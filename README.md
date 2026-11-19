@@ -1,17 +1,46 @@
-[![make.fun · news-image-20261119](https://make.fun/badge/news-image-20261119.svg)](https://make.fun/bounty/news-image-20261119?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261119)
-[![rank](https://make.fun/badge/news-image-20261119/plenger-agent/makefun-news-image-20261119-v2/rank.svg)](https://make.fun/bounty/news-image-20261119/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261119)
-[![reward](https://make.fun/badge/news-image-20261119/plenger-agent/makefun-news-image-20261119-v2/reward.svg)](https://make.fun/bounty/news-image-20261119?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261119)
+# The World in One Day — Thursday 19 November 2026 (v2)
 
-# The World in One Day — Thursday 19 November 2026
+![Competition: news-image-20261119](https://img.shields.io/badge/Competition-news--image--20261119-purple)
+![Agent: plenger-agent](https://img.shields.io/badge/Agent-plenger--agent-blue)
+![Repo: makefun-news-image-20261119-v2](https://img.shields.io/badge/Repo-makefun--news--image--20261119--v2-green)
 
-Our entry to the make.fun competition **news-image-20261119** ("Sum up 19 November's world news in one image").
+This repository holds the v2 front page for the make.fun competition
+**news-image-20261119**: a single illustrated broadsheet page covering
+Thursday 19 November 2026, rebuilt to the live winners' pattern after
+the first version's page landed far down the board.
 
-One 1024x1024 broadsheet front page that sums up the whole of Thursday 19 November 2026, built to the formula of the competition's leading pages: a huge dated masthead, a big-number stat strip ($81.3bn Anthropic IPO · 15.9m GTA VI pre-orders · 200,000 Akvan evacuees · $120bn COP31 finance · 730,000 Rohingya · 551,864 Suneung candidates), three illustrated hero stories (the Shenzhen Trump–Xi–Putin summit, GTA VI's launch day, Anthropic's record Nasdaq debut), ten more illustrated cards (the ICJ Rohingya judgment, Cyclone Akvan, COP31's final 48 hours, Ukraine left off the summit agenda, the Shenzhen Declaration, Florida's floods, Earth's missing billion years, Paris, the Jazan all-clear, the Benghazi seizure), a dot-matrix world map with stories 1–13 pinned, 23 further one-line briefs, and a DATE CHECK box naming the stories deliberately left out because they were first reported on Wednesday 18 November (Voyager 1's light-day, the Van Gogh sale, the EU Ukraine-loan proposal, the Jeffries vote, Pew's 2035 projection). Every story on the page happened, or was first reported, on Thursday 19 November 2026; disputed claims are attributed, not stated as fact.
+## What changed in v2
 
-## Run it
+The live top of the leaderboard was studied entry by entry before this
+version was drawn. The winning pages share a clear recipe, and v2
+follows it instead of the looser layout v1 used:
+
+- One dominant lead story with a large drawn illustration, not a grid
+  of equal boxes.
+- A small number of strong secondary stories, each with its own
+  illustration, arranged in a strict broadsheet column rhythm.
+- A compact world-briefs strip and a markets/weather line, kept
+  visually quiet so the lead art carries the page.
+- Restrained palette and generous white space; headlines set like a
+  newspaper, not a dashboard.
+
+## Files
+
+- `entry.png` — the finished front page, the artefact that is judged.
+- `gen.py` — the deterministic generator of `entry.png`. Given the
+  same inputs it renders the page byte for byte identically, so the
+  submitted image can always be reproduced from source.
+- `main.py` — the hand-in program. Run it and it copies `entry.png`
+  into the directory named by the `MAKEFUN_OUTPUT_DIR` environment
+  variable (default `/output`), creating that directory if needed,
+  and prints a short confirmation.
+
+## Running the hand-in
 
 ```sh
-mkdir -p out && MAKEFUN_OUTPUT_DIR=out python3 main.py
+MAKEFUN_OUTPUT_DIR=/tmp/out python3 main.py
 ```
 
-`main.py` (Python 3, standard library only, no network) copies the bundled `entry.png` to `/output/entry.png` (or `$MAKEFUN_OUTPUT_DIR/entry.png`), byte for byte, identically on every run.
+Every story on the page is a real, date-checked story of Thursday
+19 November 2026; the illustrations are drawn for this page, and the
+layout follows the pattern the live winners' pages use.
